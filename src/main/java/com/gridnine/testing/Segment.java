@@ -1,0 +1,36 @@
+package com.gridnine.testing;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+/**
+* Bean that represents a flight segment.
+* Бин,Компонент, представляющий сегмент полета.
+*/
+public class Segment {
+//    Дата отбытия
+    private final LocalDateTime departureDate;
+//    Дата прибытия
+    private final LocalDateTime arrivalDate;
+
+    Segment(final LocalDateTime dep, final LocalDateTime arr) {
+        departureDate = Objects.requireNonNull(dep);
+        arrivalDate = Objects.requireNonNull(arr);
+    }
+
+    public LocalDateTime getDepartureDate() {
+        return departureDate;
+    }
+
+    LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter fmt =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        return '[' + departureDate.format(fmt) + '|' + arrivalDate.format(fmt)
+                + ']';
+    }
+}

@@ -17,8 +17,8 @@ public class Main {
         System.out.println(flightListFiltered2);
         System.out.println();
         List<Flight> flightListFilteredAll = FlightCheck.waitingOnTheGroundForMoreThanTwoHours(
-                                              FlightCheck.arrivalDateIsEarlierThanDepartureDate(
-                                               FlightCheck.departureBeforeCurrentTime(flightListCreated)));
+                FlightCheck.arrivalDateIsEarlierThanDepartureDate(
+                        FlightCheck.departureBeforeCurrentTime(flightListCreated)));
         System.out.println(flightListFilteredAll);
     }
 }

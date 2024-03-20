@@ -15,6 +15,7 @@ public class FlightCheckTest {
     LocalDateTime threeDaysFromNow = null;
     List<Flight> result = null;
     List<Flight> expected = null;
+
     @BeforeEach
     void creatingTestData() {
         threeDaysFromNow = LocalDateTime.now().plusDays(3);
@@ -53,6 +54,29 @@ public class FlightCheckTest {
 
         assertEquals(expectedLocal.size(), actual.size());
         assertEquals(expectedLocal.toString(), actual.toString());
+        assertEquals(expectedLocal, actual);
+    }
+
+    @Test
+    void testArrivalDateIsEarlierThanDepartureDate() {
+        var actual = FlightCheck.arrivalDateIsEarlierThanDepartureDate(expected);
+        List<Flight> expectedLocal = new ArrayList<>(expected);
+        expectedLocal.remove(3);
+
+        assertEquals(expectedLocal.size(), actual.size());
+        assertEquals(expectedLocal.toString(), actual.toString());
+        assertEquals(expectedLocal, actual);
+    }
+
+    @Test
+    void testDepartureBeforeCurrentTime() {
+        var actual = FlightCheck.departureBeforeCurrentTime(expected);
+        List<Flight> expectedLocal = new ArrayList<>(expected);
+        expectedLocal.remove(2);
+
+        assertEquals(expectedLocal.size(), actual.size());
+        assertEquals(expectedLocal.toString(), actual.toString());
+        assertEquals(expectedLocal, actual);
     }
 }
 

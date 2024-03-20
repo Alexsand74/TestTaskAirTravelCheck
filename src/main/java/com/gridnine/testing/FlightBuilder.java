@@ -36,7 +36,8 @@ public class FlightBuilder {
                         threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(4),
                         threeDaysFromNow.plusHours(7), threeDaysFromNow.plusHours(8)));
     }
-     public static Flight createFlight(final LocalDateTime... dates) {
+
+    public static Flight createFlight(final LocalDateTime... dates) {
         if ((dates.length % 2) != 0) {
             throw new IllegalArgumentException(
                     //вы должны передать четное количество дат

@@ -6,6 +6,72 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FlightCheck {
+    public static List<Flight> departureBeforeCurrentTime (List<Flight> arrayFlight){
+        if (arrayFlight == null) {
+            throw new IllegalArgumentException(
+                    //массив имеет значение null
+                    "the array has a value null");
+        }
+        return arrayFlight.stream()
+                        .filter(fil -> (fil.getSegments().stream()
+                        .anyMatch((seg) -> validationTheSegmentForExpiredTime(seg))) == true)
+                        .collect(Collectors.toList());
+    }
+
+    private static boolean validationTheSegmentForExpiredTime(Segment seg) {
+        LocalDateTime thisDay = LocalDateTime.now();
+        return (seg.getArrivalDate().isAfter(thisDay)
+                && seg.getDepartureDate().isAfter(thisDay));
+    }
+    public static List<Flight> arrivalDateIsEarlierThanDepartureDate (List<Flight> arrayFlight){
+        if (arrayFlight == null) {
+            throw new IllegalArgumentException(
+                    //массив имеет значение null
+                    "the array has a value null");
+        }
+        return arrayFlight.stream()
+                        .filter(f -> (f.getSegments().stream()
+                        .anyMatch((s) -> validationSegmentCorrespondenceBetweenDepartureAndArrival(s)))
+                         == true)
+                        .collect(Collectors.toList());
+    }
+
+    private static boolean validationSegmentCorrespondenceBetweenDepartureAndArrival(Segment seg) {
+        LocalDateTime thisDay = LocalDateTime.now();
+        return (seg.getArrivalDate().isAfter(seg.getDepartureDate()));
+    }
+
+    public static List<Flight> waitingOnTheGroundForMoreThanTwoHours(List<Flight> arrayFlight){
+        if (arrayFlight == null) {
+            throw new IllegalArgumentException(
+                    //массив имеет значение null
+                    "the array has a value null");
+        }
+        return arrayFlight.stream()
+                .filter(flight -> segmentListValidationMoreThanTwoHours(flight.getSegments())  == true)
+                .collect(Collectors.toList());
+    }
+
+    private static boolean segmentListValidationMoreThanTwoHours(List<Segment> flight){
+        if (flight.size() > 1) {
+            long sumOfHours = 0;
+            for (int i = flight.size() - 1; i > 0; i--) {
+//              Дата вылета ---> LocalDateTime departureDate;
+//              Дата прибытия --->  LocalDateTime arrivalDate;
+                LocalDateTime dataMax = flight.get(i).getDepartureDate();
+                Long endSessionSeconds = dataMax.toEpochSecond(ZoneOffset.UTC);
+                LocalDateTime dataMin = flight.get(i - 1).getArrivalDate();
+                Long startSessionSeconds = dataMin.toEpochSecond(ZoneOffset.UTC);
+                sumOfHours += (endSessionSeconds - startSessionSeconds);
+            }
+            System.out.println(" 7200 =?--> " + sumOfHours);
+            System.out.println();
+            return 2 * 60 * 60 > sumOfHours;
+        }
+        return true;
+    }
+
+//======================================================================================================
     public static List<Flight> flightValidation(List<Flight> arrayFlight) {
         if (arrayFlight == null) {
             throw new IllegalArgumentException(
@@ -27,6 +93,7 @@ public class FlightCheck {
     }
 
     private static boolean segmentListValidation(List<Segment> flight) {
+
 //         int counter = 0;
 //         for (Segment s: flight) {
 //            if(!segmentOneValidation(s)){ counter++;}
@@ -35,6 +102,15 @@ public class FlightCheck {
 //              return false;
 //          }
 //       return true;
+
+
+//        {
+//            LocalDateTime timeVerificationData1 = LocalDateTime.now();
+//            LocalDateTime timeVerificationData2 = LocalDateTime.now().plusHours(2);
+//            long Seconds1 = timeVerificationData1.toEpochSecond(ZoneOffset.UTC);
+//            long Seconds2 = timeVerificationData2.toEpochSecond(ZoneOffset.UTC);
+//            System.out.println("timeVerificationDataSeconds = " + (Seconds2 - Seconds1));
+//        }
 
         if (flight.size() > 1) {
             long sumOfHours = 0;
@@ -55,16 +131,9 @@ public class FlightCheck {
                 .anyMatch((f) -> segmentOneValidation(f));
     }
 
-    private static boolean validationTheSegmentForCorrespondenceBetweenDepartureAndArrival(Segment seg) {
-        LocalDateTime thisDay = LocalDateTime.now();
-        return (seg.getArrivalDate().isAfter(seg.getDepartureDate()));
-    }
 
-    private static boolean validationTheSegmentForExpiredTime(Segment seg) {
-        LocalDateTime thisDay = LocalDateTime.now();
-        return (seg.getArrivalDate().isAfter(thisDay)
-                && seg.getDepartureDate().isAfter(thisDay));
-    }
+
+
 
     private static boolean segmentOneValidation(Segment seg) {
         LocalDateTime thisDay = LocalDateTime.now();

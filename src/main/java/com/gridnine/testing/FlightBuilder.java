@@ -18,8 +18,8 @@ public class FlightBuilder {
                 createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2)),
                 //A normal multi segment flight
                 //Обычный многосегментный рейс
-                createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2),
-                        threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(5)),
+                createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(1),
+                        threeDaysFromNow.plusHours(2), threeDaysFromNow.plusHours(5)),
                 //A flight departing in the past
                 //Рейс, вылетающий в прошлом
                 createFlight(threeDaysFromNow.minusDays(6), threeDaysFromNow),
@@ -34,7 +34,7 @@ public class FlightBuilder {
                 //Еще один рейс с наземным временем более двух часов.
                 createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2),
                         threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(4),
-                        threeDaysFromNow.plusHours(6), threeDaysFromNow.plusHours(7)));
+                        threeDaysFromNow.plusHours(7), threeDaysFromNow.plusHours(8)));
     }
      public static Flight createFlight(final LocalDateTime... dates) {
         if ((dates.length % 2) != 0) {

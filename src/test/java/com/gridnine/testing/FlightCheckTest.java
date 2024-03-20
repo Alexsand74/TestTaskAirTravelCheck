@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,36 +15,53 @@ public class FlightCheckTest {
     LocalDateTime threeDaysFromNow = null;
     List<Flight> result = null;
     List<Flight> expected = null;
-
     @BeforeEach
     void creatingTestData() {
         threeDaysFromNow = LocalDateTime.now().plusDays(3);
         result = FlightBuilder.createFlights();
         expected = Arrays.asList(
                 //A normal flight with two hour duration
-                //Обычный полет продолжительностью два часа
+                //0 - Обычный полет продолжительностью два часа
                 createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2)),
                 //A normal multi segment flight
-                //Обычный многосегментный рейс
-                createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2),
-                        threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(5)),
+                //1 - Обычный многосегментный полет-рейс
+                createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(1),
+                        threeDaysFromNow.plusHours(2), threeDaysFromNow.plusHours(5)),
+                //A flight departing in the past
+                //2 - Рейс, вылетающий в прошлом
+                createFlight(threeDaysFromNow.minusDays(6), threeDaysFromNow),
+                //A flight that departs before it arrives
+                //3 - Рейс, который вылетает до прибытия
+                createFlight(threeDaysFromNow, threeDaysFromNow.minusHours(6)),
                 //A flight with more than two hours ground time
-                //Рейс продолжительностью более двух часов наземного времени
+                //4 - Рейс продолжительностью более двух часов наземного времени
                 createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2),
                         threeDaysFromNow.plusHours(5), threeDaysFromNow.plusHours(6)),
                 //Another flight with more than two hours ground time
-                //Еще один рейс с наземным временем более двух часов.
+                //5 - Еще один рейс с наземным временем более двух часов.
                 createFlight(threeDaysFromNow, threeDaysFromNow.plusHours(2),
                         threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(4),
-                        threeDaysFromNow.plusHours(6), threeDaysFromNow.plusHours(7)));
+                        threeDaysFromNow.plusHours(7), threeDaysFromNow.plusHours(8)));
     }
 
-
     @Test
-    void testFlightValidation() {
-        var actual = FlightCheck.flightValidation(result);
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.toString(),actual.toString());
+    void testDepartureEarlierThanCurrentTime() {
+        var actual = FlightCheck.waitingOnTheGroundForMoreThanTwoHours(expected);
+        List<Flight> expectedLocal = new ArrayList<>(expected);
+        expectedLocal.remove(5);
+        expectedLocal.remove(4);
+
+        assertEquals(expectedLocal.size(), actual.size());
+        assertEquals(expectedLocal.toString(), actual.toString());
+    }
+}
+
+//=====================================================================================================================
+//    @Test
+//    void testFlightValidation() {
+//        var actual = FlightCheck.flightValidation(result);
+//        assertEquals(expected.size(), actual.size());
+//        assertEquals(expected.toString(),actual.toString());
 //        for (int i = 0; i < expected.size(); i++) {
 //            Flight flightExpected = expected.get(i);
 //            Flight flightActual = actual.get(i);
@@ -54,7 +72,7 @@ public class FlightCheckTest {
 //                assertEquals(listExpected.get(j).,listActual.get(j));
 //            }
 //        }
-    }
+//    }
 
 
 //    @AfterEach
@@ -63,7 +81,7 @@ public class FlightCheckTest {
 //        threeDaysFromNow = null;
 //        expected = null;
 //    }
-}
+
 
 //    @Test
 //    void testAddEmployee() {
